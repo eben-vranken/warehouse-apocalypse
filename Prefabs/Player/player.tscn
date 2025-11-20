@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://dham7qqtqgthe"]
+
+[ext_resource type="Script" uid="uid://btrjnonm4van5" path="res://Scripts/Player/player_movement.gd" id="1_6dc14"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_3d4pw"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3d4pw"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_6dc14"]
+height = 1.0
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_6dc14")
+
+[node name="StandingMesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_3d4pw")
+
+[node name="StandingCollision" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_3d4pw")
+
+[node name="Neck" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Neck"]
+
+[node name="CrouchingCollision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+shape = SubResource("CapsuleShape3D_6dc14")
+
+[node name="StandingCheck" type="RayCast3D" parent="."]
+target_position = Vector3(0, 1, 0)
