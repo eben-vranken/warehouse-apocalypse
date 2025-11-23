@@ -10,10 +10,14 @@ const DEACCELERATION: float = 5.0
 var current_speed: float = WALK_SPEED
 
 # Camera variables
-const MOUSE_SENSITIVITY: float = 0.005
+const MOUSE_SENSITIVITY: float = 0.0025
 const MOUSE_LOOK_UP_CLAMP: float = deg_to_rad(-80)
 const MOUSE_LOOK_DOWN_CLAMP: float = deg_to_rad(90)
 const CAMERA_ACCELERATION: float = 6.0
+
+var wobble: float = 0.0
+var wobble_speed:float = 8.0
+var wobble_amount: float = 0.01
 
 @onready var neck: Node3D = $Neck
 var neck_position: Vector3
@@ -55,7 +59,24 @@ func _physics_process(delta: float) -> void:
 		crouching = false
 		sprinting = false
 	
-	# Calculate current speed
+	# Apply crouch
+	if crouching:
+		crouching_collision.disabled = false
+		standing_collision.disabled = true
+		neck_position = NECK_CROUCHING_POSITION
+	elif standing_check.is_colliding():
+		crouching_collision.disabled = false
+		standing_collision.disabled = true
+		neck_position = NECK_CROUCHING_POSITION
+		crouching = true
+	else:
+		crouching_collision.disabled = true
+		standing_collision.disabled = false
+		neck_position = NECK_STANDING_POSITION
+
+	neck.position = lerp(neck.position, neck_position, CAMERA_ACCELERATION * delta)
+	
+		# Calculate current speed
 	current_speed = CROUCH_SPEED if crouching else SPRINT_SPEED if sprinting else WALK_SPEED 
 	
 	# Calculate movement vector
@@ -69,21 +90,6 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity = lerp(velocity, Vector3.ZERO, DEACCELERATION * delta)
 	
-	# Apply crouch
-	if crouching:
-		crouching_collision.disabled = false
-		standing_collision.disabled = true
-		neck_position = NECK_CROUCHING_POSITION
-	elif standing_check.is_colliding():
-		crouching_collision.disabled = false
-		standing_collision.disabled = true
-		neck_position = NECK_CROUCHING_POSITION
-	else:
-		crouching_collision.disabled = true
-		standing_collision.disabled = false
-		neck_position = NECK_STANDING_POSITION
-
-	neck.position = lerp(neck.position, neck_position, CAMERA_ACCELERATION * delta)
 	
 	# Apply movement
 	move_and_slide()
@@ -91,3 +97,10 @@ func _physics_process(delta: float) -> void:
 	# Apply camera movement
 	neck.rotation.x = look_input.x
 	rotation.y = -look_input.y
+
+	if input_direction != Vector2.ZERO:
+		wobble += wobble_speed * delta
+	else:
+		wobble = lerp(wobble, 0.0, 5.0 * delta)
+
+	neck.position.y += sin(wobble) * wobble_amount

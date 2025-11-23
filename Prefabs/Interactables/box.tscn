@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3 uid="uid://celh1i1lj3kw7"]
+
+[ext_resource type="Script" uid="uid://ccr0x3exw4brs" path="res://Scripts/Interactables/box.gd" id="1_6quiw"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_82p12"]
+size = Vector3(0.5, 0.5, 0.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_d5lxp"]
+size = Vector3(0.5, 0.5, 0.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_nr8re"]
+size = Vector3(0.5, 0.5, 0.5)
+
+[node name="Box" type="RigidBody3D"]
+collision_mask = 5
+
+[node name="Area3D" type="Area3D" parent="." groups=["box"]]
+script = ExtResource("1_6quiw")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("BoxShape3D_82p12")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_d5lxp")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_nr8re")

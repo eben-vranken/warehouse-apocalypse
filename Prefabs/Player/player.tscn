@@ -1,15 +1,20 @@
-[gd_scene load_steps=5 format=3 uid="uid://dham7qqtqgthe"]
+[gd_scene load_steps=7 format=3 uid="uid://dham7qqtqgthe"]
 
 [ext_resource type="Script" uid="uid://btrjnonm4van5" path="res://Scripts/Player/player_movement.gd" id="1_6dc14"]
+[ext_resource type="Script" uid="uid://dx1aoht1864qe" path="res://Scripts/Player/player_interaction.gd" id="2_hnwp3"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_3d4pw"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3d4pw"]
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_6dc14"]
+radius = 0.4
+
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_6dc14"]
 height = 1.0
 
-[node name="Player" type="CharacterBody3D"]
+[node name="Player" type="CharacterBody3D" groups=["player"]]
+collision_layer = 2
 script = ExtResource("1_6dc14")
 
 [node name="StandingMesh" type="MeshInstance3D" parent="."]
@@ -20,6 +25,15 @@ shape = SubResource("CapsuleShape3D_3d4pw")
 
 [node name="Neck" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+
+[node name="Hold Point" type="Node3D" parent="Neck"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.55, -0.9)
+script = ExtResource("2_hnwp3")
+
+[node name="Interact Zone" type="Area3D" parent="Neck/Hold Point"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Neck/Hold Point/Interact Zone"]
+shape = SubResource("SphereShape3D_6dc14")
 
 [node name="Camera3D" type="Camera3D" parent="Neck"]
 
